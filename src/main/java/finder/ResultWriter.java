@@ -2,11 +2,11 @@ package finder;
 
 import java.io.*;
 
-public class ResultWriterThread {
+public class ResultWriter {
 
     private BufferedOutputStream stream;
 
-    public ResultWriterThread(String filename) {
+    public ResultWriter(String filename) {
         try {
             this.stream = new BufferedOutputStream(new FileOutputStream(filename));
         } catch (FileNotFoundException e) {
@@ -15,6 +15,10 @@ public class ResultWriterThread {
     }
 
     public synchronized void write(String sentence) {
+        if (sentence == "") {
+            return;
+        }
+        sentence = sentence.trim() + "\n";
         try {
             this.stream.write(sentence.getBytes());
         } catch (IOException e) {
@@ -27,6 +31,7 @@ public class ResultWriterThread {
             return;
         }
         try {
+            this.stream.flush();
             this.stream.close();
         } catch (IOException e) {
             e.printStackTrace();
