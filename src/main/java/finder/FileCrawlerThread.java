@@ -36,7 +36,7 @@ public class FileCrawlerThread implements Runnable {
                 if (currentChar == '.' || currentChar == '!' || currentChar == '?') {
                     String sentence = sb.toString();
                     handleSentence(sentence);
-                    sb = new StringBuilder();
+                    sb.setLength(0);
                 }
             }
         } catch (IOException e) {
