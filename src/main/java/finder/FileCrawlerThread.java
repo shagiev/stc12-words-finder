@@ -1,13 +1,16 @@
 package finder;
 
+import org.apache.log4j.Logger;
+
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
 public class FileCrawlerThread implements Runnable {
+
+    private final Logger logger = Logger.getLogger(FileCrawlerThread.class);
 
     private String filename;
     private HashSet<String> wordsSet;
@@ -21,24 +24,23 @@ public class FileCrawlerThread implements Runnable {
     }
 
     public void run() {
+        logger.info("File crawler thread " + Thread.currentThread().getName()  + " started with file " + filename);
         try (InputStream stream = getStream(filename)){
             Reader reader = new InputStreamReader(stream);
-            ArrayList<Character> charList = new ArrayList<Character>();
             StringBuilder sb = new StringBuilder();
 
-            int c;
-            while ((c = reader.read()) != -1) {
-                sb.append((char)c);
-                charList.add((Character)(char)c);
+            int currentChar;
+            while ((currentChar = reader.read()) != -1) {
+                sb.append((char)currentChar);
 
-                if (c == '.' || c == '!' || c == '?') {
+                if (currentChar == '.' || currentChar == '!' || currentChar == '?') {
                     String sentence = sb.toString();
                     handleSentence(sentence);
                     sb = new StringBuilder();
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -50,13 +52,13 @@ public class FileCrawlerThread implements Runnable {
                 URL url = new URL(filename);
                 stream = url.openStream();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         } else {
             try {
                 stream = new BufferedInputStream(new FileInputStream(filename));
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
         return stream;

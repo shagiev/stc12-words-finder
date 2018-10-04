@@ -1,9 +1,12 @@
 import finder.Crawler;
+import org.apache.log4j.Logger;
 
 public class Main {
+    private final static Logger logger = Logger.getLogger(Main.class);
+
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
-        System.out.println("Crawler started");
+        logger.info("Start crawler");
 
         Crawler crawler = new Crawler();
         String res = "result.txt";
@@ -28,10 +31,10 @@ public class Main {
         try {
             crawler.getOccurencies(sources, words, res);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         long time = System.currentTimeMillis() - startTime;
-        System.out.println("Crawler work time: " + time + " millisec.");
+        logger.info("Crawler work time: " + time + " millisec.");
     }
 
 }
